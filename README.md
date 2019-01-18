@@ -1,3 +1,43 @@
+This is originally develeoped at [Robin C Samuel | laravel-msg91](https://github.com/robincsamuel/laravel-msg91). Modified to acheive my needs.
+
+For this package Installation
+=============================
+
+### Installation
+
+Installation via composer
+
+Add `jigs1212/laravel-msg91` to your composer requirements:
+
+```php
+"require": {
+    "jigs1212/laravel-msg91": "dev-master"
+}
+```
+
+Now run `composer update`
+
+Once the package is installed, open your `app/config/app.php` configuration file and locate the `providers` key.  Add the following line to the end:
+
+```php
+Jigs1212\LaravelMsg91\LaravelMsg91ServiceProvider::class
+```
+
+Next, locate the `aliases` key and add the following line:
+
+```php
+LaravelMsg91' => Jigs1212\LaravelMsg91\Facades\LaravelMsg91::class,
+```
+
+Put the credentials & preferences in ENV with the keys `MSG91_KEY`, `MSG91_SENDER_ID`, `MSG91_ROUTE`, `MSG91_COUNTRY`. If you wan't to customize this, publish the default configuration which will create a config file  `config/msg91.php`.
+
+```bash
+$ php artisan vendor:publish
+```
+
+##### [Usage](#usage) same as below.
+
+
 # Laravel 5 Msg91 package
 
 ### About

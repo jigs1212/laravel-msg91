@@ -1,6 +1,6 @@
 <?php
 
-namespace RobinCSamuel\LaravelMsg91;
+namespace Jigs1212\LaravelMsg91;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -18,7 +18,7 @@ class LaravelMsg91ServiceProvider extends ServiceProvider
 
     /**
      * Register the service provider.
-     * 
+     *
      * @return void
      */
     public function register()

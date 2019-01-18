@@ -1,6 +1,6 @@
 <?php
 
-namespace RobinCSamuel\LaravelMsg91\Facades;
+namespace Jigs1212\LaravelMsg91\Facades;
 
 use Illuminate\Support\Facades\Facade;
 

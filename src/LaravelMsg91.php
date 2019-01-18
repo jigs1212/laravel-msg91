@@ -1,4 +1,4 @@
-<?php namespace RobinCSamuel\LaravelMsg91;
+<?php namespace Jigs1212\LaravelMsg91;
 
 use GuzzleHttp\Client as GuzzleClient;
 
@@ -17,7 +17,7 @@ class LaravelMsg91 {
 	 *
 	 * @var string Default name or number that the SMS will be sent from
 	 *
-	 */	
+	 */
 	protected $sender_id;
 
 	/**
@@ -25,7 +25,7 @@ class LaravelMsg91 {
 	 *
 	 * @var integer text type, 1 for promotional, 4 for transactional
 	 *
-	 */	
+	 */
 	protected $route;
 
 	/**
@@ -33,7 +33,7 @@ class LaravelMsg91 {
 	 *
 	 * @var GuzzleHttp\Client Instance of the Guzzle Client class
 	 *
-	 */	
+	 */
 	protected $guzzle;
 
 	/**
@@ -41,20 +41,20 @@ class LaravelMsg91 {
 	 *
 	 * @var boolean if text should be limited to one credit.
 	 *
-	 */	
+	 */
 	protected $limit_credit;
 
 	/**
-	 * Country 
+	 * Country
 	 *
 	 * @var integer country option, 1 for US, 91 for India, 0 for all other international
 	 *
-	 */	
+	 */
 	protected $country;
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @return void
 	 *
 	 */
@@ -75,9 +75,9 @@ class LaravelMsg91 {
 	 * @param string $message The message to be sent
 	 * @param string $sender_id if set, overrides the default sender name
 	 * @param integer $route if set, overrides the default route. 1 for promotional, 4 for transactional
-	 * @param array $opts array of additional options like schtime 
+	 * @param array $opts array of additional options like schtime
 	 *
-	 * @return string JSON encoded string of the 
+	 * @return string JSON encoded string of the
 	 *
 	 */
 	public function message($recipients, $message, $opts=[]){
@@ -99,7 +99,7 @@ class LaravelMsg91 {
 
 		if(gettype($recipients) != 'array') $recipients = [$recipients];
 		foreach($recipients as $num){
-			if(!preg_match('/^[0-9]+$/i', $num)) 
+			if(!preg_match('/^[0-9]+$/i', $num))
 				throw new \Exception('Phone number should be digits only');
 		}
 
@@ -125,7 +125,7 @@ class LaravelMsg91 {
 		}
 
 		$data['authkey'] = $this->auth_key;
-		$response = $this->guzzle->get('sendhttp.php', ['query' =>$data]);	
+		$response = $this->guzzle->get('sendhttp.php', ['query' =>$data]);
 		return json_decode($response->getBody());
 	}
 
@@ -135,16 +135,16 @@ class LaravelMsg91 {
 	 * @param string $recipient recipient number
 	 * @param string $otp The OTP to be sent
 	 * @param string $message if set, overrides the default message
-	 * @param array $opts array of additional options like sender 
+	 * @param array $opts array of additional options like sender
 	 *
-	 * @return string JSON encoded response 
+	 * @return string JSON encoded response
 	 *
 	 */
 	public function sendOtp($recipient, $otp, $message=false, $opts=[]){
 		$data = collect($opts)->only('sender')->toArray();
 		if(!isset($data['sender'])) $data['sender'] = $this->sender_id;
-		
-		if(!preg_match('/^[0-9]+$/i', $recipient)) 
+
+		if(!preg_match('/^[0-9]+$/i', $recipient))
 			throw new \Exception('Phone number should be digits only');
 
 		$data['mobile'] = $recipient;
@@ -152,7 +152,7 @@ class LaravelMsg91 {
 		$data['message'] = $message?:"Your otp is {$otp}";
 
 		$data['authkey'] = $this->auth_key;
-		$response = $this->guzzle->get('sendotp.php', ['query' =>$data]);	
+		$response = $this->guzzle->get('sendotp.php', ['query' =>$data]);
 		return json_decode($response->getBody());
 	}
 
@@ -161,13 +161,13 @@ class LaravelMsg91 {
 	 *
 	 * @param string $recipient recipient number
 	 * @param string $otp The OTP recieved
-	 * @param array $opts array of additional options like raw 
+	 * @param array $opts array of additional options like raw
 	 *
 	 * @return string/boolean JSON encoded response or boolean as per preference
 	 *
 	 */
 	public function verifyOtp($recipient, $otp, $opts=[]){
-		if(!preg_match('/^[0-9]+$/i', $recipient)) 
+		if(!preg_match('/^[0-9]+$/i', $recipient))
 			throw new \Exception('Phone number should be digits only');
 
 		$data['mobile'] = $recipient;
@@ -179,7 +179,7 @@ class LaravelMsg91 {
 		if(isset($opts['raw']) && $opts['raw'] == true){
 			return json_decode($response->getBody());
 		} else {
-			return json_decode($response->getBody())->msgType == 'success' ? true : false;
+			return json_decode($response->getBody())->type == 'success' ? true : false;
 		}
 	}
 
@@ -189,15 +189,15 @@ class LaravelMsg91 {
 	 * @param string $recipient recipient number
 	 * @param string $type Method to retry otp : voice or text. Default is voice.
 	 *
-	 * @return string JSON encoded response 
+	 * @return string JSON encoded response
 	 *
 	 */
 	public function resendOtp($recipient,$type='text'){
-		if(!preg_match('/^[0-9]+$/i', $recipient)) 
+		if(!preg_match('/^[0-9]+$/i', $recipient))
 			throw new \Exception('Phone number should be digits only');
 
 		$data['mobile'] = $recipient;
-		$data['type'] = $type;
+		$data['retrytype'] = $type;
 
 		$data['authkey'] = $this->auth_key;
 		$response = $this->guzzle->get('retryotp.php', ['query' =>$data]);
